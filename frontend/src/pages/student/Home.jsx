@@ -4,7 +4,7 @@ import { Menu, X, Home, Calendar, History, BarChart2, Brain, User } from 'lucide
 export default function HomeS() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    return (
+  return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
       {/* Navbar */}
       <nav className="flex items-center justify-between bg-white shadow px-4 py-3 sticky top-0 z-50">
@@ -114,8 +114,6 @@ export default function HomeS() {
           </div>
         </section>
       </main>
-        </div>
-    );
+    </div>
+  );
 }
-
-export default HomeS;
