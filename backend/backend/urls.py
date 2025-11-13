@@ -16,6 +16,7 @@ urlpatterns = [
 
     # AI Quiz generation
     path('api/ai/', include('ai_quiz.urls')),
+    
 
     # # Reports / analytics
     # path('api/reports/', include('reports.urls')),

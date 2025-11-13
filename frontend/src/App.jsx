@@ -10,7 +10,7 @@ import CreateQuiz from "./pages/teacher/CreateQuiz";
 import AttemptQuiz from "./pages/student/AttemptQuiz";
 import Start from "./pages/student/Start";
 import ResultPage from "./pages/student/Result";
-
+import RecentQuizzes from "./components/RecentQuiz";
 function Logout() {
   localStorage.clear();
   return <Navigate to="/login" />;
@@ -79,6 +79,14 @@ function App() {
           element={
             <ProtectedRoute allowedRole="student">
               <ResultPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recent-quizzes"
+          element={
+            <ProtectedRoute allowedRole="student">
+              <RecentQuizzes />
             </ProtectedRoute>
           }
         />

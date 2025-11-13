@@ -56,6 +56,7 @@ function Start() {
       console.log("Result:", res.data);
 
       navigate(`/result/${quiz.quiz_id}`, { state: res.data });
+      localStorage.setItem("lastAttempt", JSON.stringify(res.data));
     } catch (err) {
       console.error("Error submitting quiz:", err);
       alert(err.response?.data?.detail || "Failed to submit quiz.");

@@ -135,3 +135,75 @@ class SaveAttemptView(APIView):
             },
             status=status.HTTP_201_CREATED
         )
+
+class GetRecentQuizzesView(APIView):
+    """
+    GET /api/recent-quizzes/
+    Returns all quiz attempts by the logged-in student.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        attempts = Attempt.objects.filter(student=user).select_related("quiz", "quiz__teacher").order_by("-attempted_at")
+
+        data = []
+        for attempt in attempts:
+            data.append({
+                "id": attempt.id,
+                "score": round(attempt.score),
+                "attempted_at": attempt.attempted_at,
+                "quiz": {
+                    "title": attempt.quiz.title,
+                    # "created_by": attempt.quiz.teacher.username if attempt.quiz.teacher else "N/A",
+                },
+            })
+        return Response(data, status=status.HTTP_200_OK)
+    
+class GetAttemptResultView(APIView):
+    """
+    GET /api/attempts/result/<attempt_id>/
+    Returns full quiz analysis for a specific attempt.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, attempt_id):
+        try:
+            attempt = Attempt.objects.get(id=attempt_id, student=request.user)
+        except Attempt.DoesNotExist:
+            return Response({"detail": "Attempt not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        saved_answers = SavedAnswer.objects.filter(attempt=attempt).select_related("question")
+        results = []
+
+        for sa in saved_answers:
+            q = sa.question
+            option_text_map = {
+                "A": q.option_a,
+                "B": q.option_b,
+                "C": q.option_c,
+                "D": q.option_d,
+            }
+            results.append({
+                "question_id": q.id,
+                "question_text": q.text,
+                "selected_option": sa.selected_option,
+                "selected_option_text": option_text_map.get(sa.selected_option, ""),
+                "correct_option": q.correct_option,
+                "correct_option_text": option_text_map.get(q.correct_option, ""),
+                "is_correct": sa.selected_option == q.correct_option,
+            })
+
+        correct_count = sum(r["is_correct"] for r in results)
+        total_questions = len(results)
+        score = attempt.score
+
+        return Response({
+            "attempt_id": attempt.id,
+            "quiz_title": attempt.quiz.title,
+            "score": round(score, 2),
+            "correct_answers": correct_count,
+            "total_questions": total_questions,
+            "results": results,
+        }, status=status.HTTP_200_OK)
+
