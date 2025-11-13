@@ -1,10 +1,23 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 function ResultPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const result = location.state; // This is res.data passed via navigate()
+  const [result, setResult] = useState(() => {
+    const fromState = location.state;
+    if (fromState) return fromState;
+    const saved = localStorage.getItem("lastAttempt");
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  useEffect(() => {
+    // if we came from a fresh quiz, update the stored result again
+    if (location.state) {
+      localStorage.setItem("lastAttempt", JSON.stringify(location.state));
+    }
+  }, [location.state]);
+
   const { id } = useParams(); // quiz_id (optional)
 
   if (!result) {

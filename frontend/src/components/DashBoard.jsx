@@ -35,6 +35,10 @@ function Dashboard() {
     }
   };
 
+  const handleRecentQuizzes = () => {
+    navigate("/recent-quizzes");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Top bar */}
@@ -68,7 +72,9 @@ function Dashboard() {
         </div>
 
         {/* Example card - past quizzes */}
-        <div className="bg-white shadow-md rounded-xl p-6">
+        <div 
+          onClick={handleRecentQuizzes}
+          className="bg-white shadow-md rounded-xl p-6 cursor-pointer hover:shadow-lg transition">
           <h2 className="text-xl font-semibold mb-2">Recent Quizzes</h2>
           <p className="text-gray-600">
             View your {user.role === "teacher" ? "created" : "attempted"} quizzes here.
