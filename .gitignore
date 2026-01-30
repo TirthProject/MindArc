@@ -20,7 +20,8 @@ uploads/
 
 # Environment files
 .env
-.env.*
+backend/.env
+
 
 # Test / coverage
 .pytest_cache/
