@@ -4,7 +4,7 @@ import json
 import requests
 from typing import List, Dict, Any
 import logging
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube-transcript-api import YouTubeTranscriptApi
 
 
 
